@@ -111,6 +111,7 @@ export const TenPointChecklistView: React.FC<Props> = ({
   const [passportExpiryInput, setPassportExpiryInput] = useState('');
   const [insuranceStartDateInput, setInsuranceStartDateInput] = useState('');
   const [policeCertifyExpireInput, setPoliceCertifyExpireInput] = useState('');
+  const [policeCertifyDateInput, setPoliceCertifyDateInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [activeWarningApp, setActiveWarningApp] = useState<{
     name: string;
@@ -241,6 +242,28 @@ export const TenPointChecklistView: React.FC<Props> = ({
     }
   };
 
+  // Fast inline update for police certify date or expire date directly in the table
+  const handleInlineDateUpdate = async (app: ApplicantOverview, field: 'police_certify_expire_date' | 'police_certified_date', dateVal: string) => {
+    try {
+      const res = await fetch(`/api/applicants/${app.applicant_id}/quick-update`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [field]: dateVal })
+      });
+      if (res.ok) {
+        showNotification(
+          'success',
+          `${app.full_name}: Updated ${field === 'police_certify_expire_date' ? 'Certify Expire Date' : 'Certify Date'} to ${dateVal || 'cleared'}`
+        );
+        onRefreshData();
+      } else {
+        showNotification('error', 'Failed to update date');
+      }
+    } catch (err: any) {
+      showNotification('error', err.message);
+    }
+  };
+
   // Open modal for full sentence verification
   const handleOpenVerifyModal = (app: ApplicantOverview) => {
     setVerifyingApp(app);
@@ -248,6 +271,7 @@ export const TenPointChecklistView: React.FC<Props> = ({
     setPassportExpiryInput(app.passport_expiry || '');
     setInsuranceStartDateInput((app.checklist as any)?.insurance_start_date || (app as any).insurance_start_date || '');
     setPoliceCertifyExpireInput((app.checklist as any)?.police_certify_expire_date || (app as any).police_certify_expire_date || '');
+    setPoliceCertifyDateInput((app.checklist as any)?.police_certified_date || (app as any).police_certified_date || '');
   };
 
   const handleSaveModalVerify = async () => {
@@ -261,7 +285,8 @@ export const TenPointChecklistView: React.FC<Props> = ({
           ...editingForm,
           passport_expiry: passportExpiryInput,
           insurance_start_date: insuranceStartDateInput,
-          police_certify_expire_date: policeCertifyExpireInput
+          police_certify_expire_date: policeCertifyExpireInput,
+          police_certified_date: policeCertifyDateInput
         })
       });
       if (res.ok) {
@@ -294,6 +319,8 @@ export const TenPointChecklistView: React.FC<Props> = ({
           '2. PASSPORT': items.passport_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
           '3. POLICE REPORT': items.police_report_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
           '4. CERTIFY COPY': items.police_certified_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
+          'POLICE CERTIFY DATE': (app.checklist as any)?.police_certified_date || (app as any).police_certified_date || '-',
+          'POLICE CERTIFY EXPIRE DATE': (app.checklist as any)?.police_certify_expire_date || (app as any).police_certify_expire_date || '-',
           '5. AGREEMENT': items.agreement_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
           '6. IMAGE': items.usd_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
           '7. GUARANTEE': items.guarantee_letter_ready ? 'CORRECT (✓)' : 'WRONG (✗)',
@@ -691,6 +718,19 @@ export const TenPointChecklistView: React.FC<Props> = ({
 
               <div>
                 <label className="text-[10px] font-bold text-amber-700 uppercase block mb-1">
+                  Police Certify Date (Yellow highlighted)
+                </label>
+                <input
+                  type="date"
+                  value={policeCertifyDateInput}
+                  onChange={(e) => setPoliceCertifyDateInput(e.target.value)}
+                  className="w-full bg-white border border-amber-300 rounded-lg p-2 font-mono text-slate-900 font-bold"
+                />
+                <span className="text-[9px] text-amber-800">Date on yellow-highlighted certify stamp</span>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-amber-700 uppercase block mb-1">
                   Police Certify Expire Date
                 </label>
                 <input
@@ -699,7 +739,7 @@ export const TenPointChecklistView: React.FC<Props> = ({
                   onChange={(e) => setPoliceCertifyExpireInput(e.target.value)}
                   className="w-full bg-white border border-amber-300 rounded-lg p-2 font-mono text-slate-900 font-bold"
                 />
-                <span className="text-[9px] text-amber-800">Certified copy validity / expiry date</span>
+                <span className="text-[9px] text-amber-800">Certified copy validity / expiry date (Date only)</span>
               </div>
 
               {/* Warning box */}

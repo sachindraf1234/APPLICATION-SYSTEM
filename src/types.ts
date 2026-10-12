@@ -520,3 +520,153 @@ export interface ApplicantFullDetails {
   ticket: Ticket | null;
   logs: ActivityLog[];
 }
+
+// ==================== BILINGUAL CV & APPLICATION CREATION TYPES ====================
+export type AppFormat = "format1" | "format2" | "format3";
+
+export interface CareerRow {
+  id: number;
+  employerDetails: string;
+  period: string;
+  position: string;
+}
+
+export interface TrainingRow {
+  id: number;
+  courseName: string;
+  duration: string;
+  diploma: string;
+}
+
+export type AttachmentType = "police_report" | "passport" | "applicant_photo" | "other";
+
+export interface AttachedDoc {
+  id: string;
+  type: AttachmentType;
+  title: string;
+  url: string;
+  fileName?: string;
+}
+
+export interface CVData {
+  // Common & Format 01 Fields
+  name: string;
+  surname: string;
+  previousName: string;
+  placeOfBirth: string;
+  dateOfBirth: string;
+  fatherName: string;
+  motherName: string;
+  citizenship: string;
+  nationality: string;
+  passportNo: string;
+  passportIssuedBy: string;
+  passportIssuedDate: string;
+  passportValidFrom: string;
+  passportValidTo: string;
+  residence: string;
+  country: string;
+  city: string;
+  lastResidence: string;
+  lastResidenceCountry: string;
+  lastResidenceCity: string;
+  maritalStatus: string;
+  childrenToSupport: string;
+  professionalSkill: string;
+  appliedPosition?: string;
+  careers: CareerRow[];
+  classesGraduate: string;
+  foreignLanguage: string;
+  email: string;
+
+  // Format 02 Specific Fields
+  phone: string;
+  height: string;
+  weight: string;
+  religion: string;
+  college: string;
+  secondarySchool: string;
+  primarySchool: string;
+  trainings: TrainingRow[];
+  langUnderstanding: "Excellent" | "Good" | "Fair" | "Poor" | "None";
+  langSpeaking: "Excellent" | "Good" | "Fair" | "Poor" | "None";
+  langWriting: "Excellent" | "Good" | "Fair" | "Poor" | "None";
+
+  // Declarations
+  otherMentions: string;
+  declarationRomanian: string;
+  declarationEnglish: string;
+  declarationHealth: string;
+  date: string;
+
+  // Uploaded assets
+  photoUrl: string | null;
+  signatureUrl: string | null;
+  topLeftPhotoUrl: string | null;
+
+  // Supporting Document Attachments
+  attachments?: AttachedDoc[];
+}
+
+export const INITIAL_CV_DATA: CVData = {
+  name: "KALUWA DEWAGE DHANUSHKA",
+  surname: "NISHSHANKA",
+  previousName: "-",
+  placeOfBirth: "RAGAMA",
+  dateOfBirth: "22.03.2000",
+  fatherName: "K.D. MOHAN LAL SIRISENA",
+  motherName: "HETTINARAYAN MUDIYANSELAGE RENUKA NISHANTHI",
+  citizenship: "SRI LANKAN",
+  nationality: "SRI LANKA",
+  passportNo: "N9516135",
+  passportIssuedBy: "COLOMBO",
+  passportIssuedDate: "04/08/2022",
+  passportValidFrom: "04/08/2022",
+  passportValidTo: "04/08/2032",
+  residence: "WELANGASWEWA, BORALUWEWA, SRI LANKA",
+  country: "SRI LANKA",
+  city: "BORALUWEWA",
+  lastResidence: "WELANGASWEWA, BORALUWEWA, SRI LANKA",
+  lastResidenceCountry: "SRI LANKA",
+  lastResidenceCity: "BORALUWEWA",
+  maritalStatus: "SINGLE",
+  childrenToSupport: "-",
+  professionalSkill: "VEHICLE SALE OWNER",
+  appliedPosition: "VEHICLE SALE OWNER",
+  careers: [
+    { id: 1, employerDetails: "VEHICLE SALE COMPNAY", period: "02 YEARS", position: "OWNER" },
+    { id: 2, employerDetails: "", period: "", position: "" },
+    { id: 3, employerDetails: "", period: "", position: "" }
+  ],
+  classesGraduate: "O/L – 1999",
+  foreignLanguage: "NORMAL ENGLISH",
+  email: "TRANSARABIAN@YAHOO.COM",
+
+  // Format 02 Specific Initial Values
+  phone: "+94775960561",
+  height: "",
+  weight: "",
+  religion: "BUDDHIST",
+  college: "",
+  secondarySchool: "YES",
+  primarySchool: "YES",
+  trainings: [
+    { id: 1, courseName: "-", duration: "-", diploma: "-" },
+    { id: 2, courseName: "", duration: "", diploma: "" },
+    { id: 3, courseName: "", duration: "", diploma: "" }
+  ],
+  langUnderstanding: "Good",
+  langSpeaking: "Good",
+  langWriting: "Good",
+
+  otherMentions: "",
+  declarationRomanian: "Declar pe proprie raspundere sunt apt din punct de vedere medical pentru a fi încadrat în muncă şi că am cunoştinţe minime de limba română si cunostiinte de limba engleza.",
+  declarationEnglish: "I declare on my own responsibility that I am medically fit to work and that I have minimal knowledge of Romanian and English knowledge.",
+  declarationHealth: "I am maintaining a good health & able to work . I can understand Little bite of the Romanian language.",
+  date: new Date().toLocaleDateString("en-GB"),
+  photoUrl: null,
+  signatureUrl: null,
+  topLeftPhotoUrl: null,
+  attachments: [],
+};
+
